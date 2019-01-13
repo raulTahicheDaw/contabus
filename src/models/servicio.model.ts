@@ -1,13 +1,13 @@
-export interface Servicio {
-  client: string;
-  date: string;
-  day_id: string;
-  description: string;
-  end_time: string;
-  order_number: string;
-  pax: number;
-  start_time: string;
-  status: string;
-  task_type_id: number;
-  user_id: number;
+export interface ServicioModel {
+  cliente: string;
+  fecha: string;
+  dia_id: string;
+  descripcion: string;
+  hora_fin: string;
+  orden: string;
+  paxs: number;
+  hora_inicio: string;
+  estado: string;
+  tipo: string;
+  user_id: '';
 }

@@ -1,13 +1,9 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AuthService} from "../../providers/auth-service/auth-service";
+import {MensajesProvider} from "../../providers/mensajes/mensajes";
 
-/**
- * Generated class for the LoginPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @Component({
   selector: 'page-login',
@@ -16,23 +12,54 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 export class LoginPage {
 
   loginForm: FormGroup;
+  loginError: string;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private formBuilder: FormBuilder,
+    private auth: AuthService,
+    private mensaje: MensajesProvider,
+
   ) {
     this.loginForm = this.buildLoginForm();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
-  }
-
   doLogin(event: Event) {
     event.preventDefault();
-    //TODO: implement auth
-    this.navCtrl.setRoot('TabsPage');
+
+    let data = this.loginForm.value;
+
+    if (!data.email) {
+      return;
+    }
+
+    let credentials = {
+      //email: data.email,
+      //password: data.password
+      email: 'raul.tahiche.daw@gmail.com',
+      password: 'secret'
+    };
+    this.auth.signInWithEmail(credentials)
+      .then(
+        () => this.navCtrl.setRoot('TabsPage'),
+        (error) => {
+          switch (error.code) {
+            case 'auth/invalid-email':
+              this.loginError = 'El email introducido no es válido. Introduce un email correcto';
+              break;
+            case 'auth/wrong-password':
+              this.loginError = 'La contraseña no es correcta o está vacía. Introduce una contraseña correcta ';
+              break;
+            case 'auth/user-not-found':
+              this.loginError = 'El usuario no existe. Introduce un usuario que exista';
+              break;
+            default:
+              this.loginError = error.message;
+          }
+          this.mensaje.crearToast(this.loginError);
+        }
+      );
   }
 
   private buildLoginForm() {
@@ -41,6 +68,8 @@ export class LoginPage {
       password: ['', Validators.required]
     })
   }
+
+
 
 
 }
