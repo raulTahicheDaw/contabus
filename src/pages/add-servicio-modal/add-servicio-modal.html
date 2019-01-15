@@ -19,7 +19,7 @@
       </ion-item>
       <ion-item>
         <ion-label floating>Tipo</ion-label>
-        <ion-select formControlName="tipo">
+        <ion-select formControlName="tipo" #C (ionChange)="onChange(C.value)">
           <ion-option value="entrada">Entrada</ion-option>
           <ion-option value="salida">Salida</ion-option>
           <ion-option value="traslado">Traslado</ion-option>
@@ -29,11 +29,11 @@
       </ion-item>
       <ion-item>
         <ion-label floating>Lugar Comienzo</ion-label>
-        <ion-input type="text" formControlName="lugarComienzo"></ion-input>
+        <ion-input type="text" formControlName="lugarComienzo" [(ngModel)]="lugarComienzo"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Lugar Fin</ion-label>
-        <ion-input type="text" formControlName="lugarFin"></ion-input>
+        <ion-input type="text" formControlName="lugarFin" [(ngModel)]="lugarFin"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Plazas</ion-label>

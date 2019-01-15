@@ -9,5 +9,7 @@ export interface ServicioModel {
   hora_inicio: string;
   estado: string;
   tipo: string;
-  user_id: '';
+  user_id: string;
+  observaciones: string;
+  matricula: string;
 }

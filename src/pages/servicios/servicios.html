@@ -16,6 +16,10 @@
 
 
 <ion-content padding>
+  <ion-item>
+    <ion-label>Elige dia</ion-label>
+    <ion-datetime #Dia displayFormat="DD-MM-YYYY" pickerFormat="DD-MM-YYYY" [(ngModel)]="dia" (ionChange)="onChange(Dia.value)"></ion-datetime>
+  </ion-item>
   <ion-list>
     <ion-item *ngFor='let servicio of servicios | async'>
       <ion-label>{{servicio.fecha}}</ion-label>

@@ -3,7 +3,7 @@ import {ActionSheetController, IonicPage, ModalController, NavController, NavPar
 import {AngularFireList, AngularFireDatabase} from 'angularfire2/database';
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import { AngularFireAuth } from 'angularfire2/auth';
+import {AngularFireAuth} from 'angularfire2/auth';
 import {MensajesProvider} from "../../providers/mensajes/mensajes";
 
 @IonicPage()
@@ -16,6 +16,7 @@ export class ServiciosPage {
   serviciosRef: AngularFireList<any>;
   servicios: Observable<any[]>;
   user_uid: any;
+  dia: string;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -25,22 +26,32 @@ export class ServiciosPage {
               private mensaje: MensajesProvider,
               private modalCtrl: ModalController
   ) {
+    this.dia = this.formattedDate(new Date());
     this.afAuth.authState.subscribe(res => {
       if (res && res.uid) {
         console.log('user is logged in');
         this.user_uid = res.uid;
         console.log(this.user_uid)
-        this.serviciosRef = this.database.list('users/'+this.user_uid+'/servicios',
-          ref => ref.orderByChild('fecha').equalTo('2019-01-01'));
-        this.servicios = this.serviciosRef.snapshotChanges().pipe(map(changes => {
-          return changes.map(c => ({key: c.payload.key, ...c.payload.val()}));
-        }));
+        this.obtenerServicios();
       } else {
         this.mensaje.crearToast('user not logged in');
       }
     });
   }
 
+  onChange(dia) {
+    this.dia = this.formattedDate(new Date(dia.year + '-' + dia.month + '-' + dia.day));
+    this.obtenerServicios()
+  }
+
+  obtenerServicios() {
+    console.log(this.dia)
+    this.serviciosRef = this.database.list('users/' + this.user_uid + '/servicios',
+      ref => ref.orderByChild('fecha').equalTo(this.dia));
+    this.servicios = this.serviciosRef.snapshotChanges().pipe(map(changes => {
+      return changes.map(c => ({key: c.payload.key, ...c.payload.val()}));
+    }));
+  }
 
   showOptions() {
     const action = this.actionSheetCtrl.create({
@@ -54,10 +65,10 @@ export class ServiciosPage {
           }
         },
         {
-          icon: 'trash',
-          text: 'Limpiar dia',
+          icon: 'clipboard',
+          text: 'Cerrar dia',
           handler: () => {
-            console.log('');
+            console.log('Cerrar dia');
           }
         },
         {
@@ -72,9 +83,24 @@ export class ServiciosPage {
     action.present();
   }
 
-  addServicios(){
-    const crearServicios =  this.modalCtrl.create('AddServicioModalPage');
+  addServicios() {
+    const crearServicios = this.modalCtrl.create('AddServicioModalPage',
+      {
+        user_id: this.user_uid,
+        fecha: this.dia
+      });
     crearServicios.present();
+  }
+
+  formattedDate(d) {
+    let month = String(d.getMonth() + 1);
+    let day = String(d.getDate());
+    const year = String(d.getFullYear());
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return `${year}-${month}-${day}`;
   }
 
 }
