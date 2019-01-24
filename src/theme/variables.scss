@@ -38,12 +38,12 @@ $colors: (
   secondary:  #75a478,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222
+  dark:       #222,
+  warning:    yellow,
 );
 
 $select-md-icon-color : white;
 $select-ios-icon-color: white;
-
 // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here

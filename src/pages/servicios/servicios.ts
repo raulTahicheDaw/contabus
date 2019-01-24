@@ -5,6 +5,8 @@ import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {AngularFireAuth} from 'angularfire2/auth';
 import {MensajesProvider} from "../../providers/mensajes/mensajes";
+import {LoginPage} from "../login/login";
+import {CrudProvider} from "../../providers/crud/crud";
 
 @IonicPage()
 @Component({
@@ -13,7 +15,6 @@ import {MensajesProvider} from "../../providers/mensajes/mensajes";
 })
 export class ServiciosPage {
 
-  serviciosRef: AngularFireList<any>;
   servicios: Observable<any[]>;
   user_uid: any;
   dia: string;
@@ -24,35 +25,34 @@ export class ServiciosPage {
               public database: AngularFireDatabase,
               public afAuth: AngularFireAuth,
               private mensaje: MensajesProvider,
-              private modalCtrl: ModalController
+              private modalCtrl: ModalController,
+              private crud: CrudProvider
   ) {
     this.dia = this.formattedDate(new Date());
     this.afAuth.authState.subscribe(res => {
       if (res && res.uid) {
-        console.log('user is logged in');
         this.user_uid = res.uid;
         console.log(this.user_uid)
-        this.obtenerServicios();
+        this.servicios = this.crud.obtenerServicios(this.dia);
       } else {
         this.mensaje.crearToast('user not logged in');
+        this.navCtrl.setRoot(LoginPage)
       }
     });
   }
 
+  /**
+   * Obtener servicios cuando cambiamos fecha
+   * @param dia
+   */
   onChange(dia) {
     this.dia = this.formattedDate(new Date(dia.year + '-' + dia.month + '-' + dia.day));
-    this.obtenerServicios()
+    this.servicios = this.crud.obtenerServicios(this.dia);
   }
 
-  obtenerServicios() {
-    console.log(this.dia)
-    this.serviciosRef = this.database.list('users/' + this.user_uid + '/servicios',
-      ref => ref.orderByChild('fecha').equalTo(this.dia));
-    this.servicios = this.serviciosRef.snapshotChanges().pipe(map(changes => {
-      return changes.map(c => ({key: c.payload.key, ...c.payload.val()}));
-    }));
-  }
-
+  /**
+   * Opciones del menu
+   */
   showOptions() {
     const action = this.actionSheetCtrl.create({
       title: 'Opciones',
@@ -83,6 +83,9 @@ export class ServiciosPage {
     action.present();
   }
 
+  /**
+   * Abre Modal Crear nuevos servicios
+   */
   addServicios() {
     const crearServicios = this.modalCtrl.create('AddServicioModalPage',
       {
@@ -92,6 +95,10 @@ export class ServiciosPage {
     crearServicios.present();
   }
 
+  /**
+   * Construye fecha
+   * @param d
+   */
   formattedDate(d) {
     let month = String(d.getMonth() + 1);
     let day = String(d.getDate());

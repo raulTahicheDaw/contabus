@@ -37,7 +37,7 @@ export class LoginPage {
     let credentials = {
       //email: data.email,
       //password: data.password
-      email: 'raul.tahiche.daw@gmail.com',
+      email: 'raul@admin.es',
       password: 'secret'
     };
     this.auth.signInWithEmail(credentials)

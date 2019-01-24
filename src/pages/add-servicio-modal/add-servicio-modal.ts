@@ -3,6 +3,7 @@ import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ServicioModel} from "../../models/servicio.model";
 import {defaultThrottleConfig} from "rxjs/internal-compatibility";
+import {CrudProvider} from "../../providers/crud/crud";
 
 @IonicPage()
 @Component({
@@ -34,6 +35,7 @@ export class AddServicioModalPage {
               public navParams: NavParams,
               private viewCtrl: ViewController,
               private formBuilder: FormBuilder,
+              private crud: CrudProvider
   ) {
     this.loginForm = this.buildLoginForm();
     this.servicio.fecha = this.navParams.get('fecha');
@@ -62,8 +64,9 @@ export class AddServicioModalPage {
       default:
         this.servicio.tipo = data.tipo;
     }
-    this.servicio.descripcion = data.lugarComienzo + ' ' + data.tipo + ' ' + data.lugarFin
-    console.log(this.servicio)
+    this.servicio.descripcion = data.lugarComienzo + ' ' + data.tipo + ' ' + data.lugarFin;
+    this.crud.addServicio(this.servicio);
+    this.close();
   }
 
   close() {

@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="dark">
     <ion-title>
       <img src="./assets/imgs/onlylogo.png" class="logo" float-left>
       <h3>Servicios</h3>
@@ -11,19 +11,43 @@
       </button>
     </ion-buttons>
   </ion-navbar>
-
+  <ion-item class="fecha">
+    <ion-label>Elige dia</ion-label>
+    <ion-datetime #Dia displayFormat="DD-MM-YYYY" pickerFormat="DD-MM-YYYY" [(ngModel)]="dia"
+                  (ionChange)="onChange(Dia.value)"></ion-datetime>
+  </ion-item>
 </ion-header>
 
 
 <ion-content padding>
-  <ion-item>
-    <ion-label>Elige dia</ion-label>
-    <ion-datetime #Dia displayFormat="DD-MM-YYYY" pickerFormat="DD-MM-YYYY" [(ngModel)]="dia" (ionChange)="onChange(Dia.value)"></ion-datetime>
-  </ion-item>
-  <ion-list>
-    <ion-item *ngFor='let servicio of servicios | async'>
-      <ion-label>{{servicio.fecha}}</ion-label>
-      <ion-label>{{ servicio.descripcion}}</ion-label>
+
+  <ion-list no-lines>
+    <ion-item class="servicio" *ngFor='let servicio of servicios | async' lines="full">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <h1>{{servicio.hora_inicio}}</h1>
+          </ion-col>
+          <ion-col text-end>
+            Paxs: <h3>{{servicio.paxs}}</h3>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>{{servicio.descripcion}}</ion-col>
+          <ion-col text-end>Matr: <h3>{{servicio.matricula}}</h3></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>{{servicio.cliente}}</ion-col>
+          <ion-col text-end>Fin: <h1>{{servicio.hora_fin}}</h1></ion-col>
+        </ion-row>
+        <ion-row>
+          <span class="observaciones" text-wrap>{{servicio.observaciones}}</span>
+        </ion-row>
+      </ion-grid>
+
+      <ion-icon color="warning" *ngIf="servicio.estado === 'pendiente'" name="clock" float-right></ion-icon>
+      <ion-icon color="danger" *ngIf="servicio.estado === 'cancelado'" name="close-circle" float-right></ion-icon>
+      <ion-icon color="secondary" *ngIf="servicio.estado === 'terminado'" name="done-all" float-right></ion-icon>
     </ion-item>
   </ion-list>
 </ion-content>

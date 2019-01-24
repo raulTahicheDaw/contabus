@@ -12,6 +12,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthService } from '../providers/auth-service/auth-service';
 import { MensajesProvider } from '../providers/mensajes/mensajes';
+import { CrudProvider } from '../providers/crud/crud';
 
 const firebaseConfig = {
   apiKey: "AIzaSyADooNFyyvK0ugYKr_h0kdBL6rNnES1U48",
@@ -44,7 +45,8 @@ const firebaseConfig = {
     AngularFireAuth,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthService,
-    MensajesProvider
+    MensajesProvider,
+    CrudProvider
   ]
 })
 export class AppModule {}

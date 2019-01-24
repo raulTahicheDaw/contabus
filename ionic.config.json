@@ -1,6 +1,8 @@
 {
   "name": "contabus",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic-angular",
   "id": "fba20061"
 }
