@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar color="dark">
     <ion-title>
-      <h3>Nuevo servicio</h3>
+      <h3>Modificar servicio</h3>
     </ion-title>
     <ion-buttons end>
       <button ion-button clear item-right icon-only (click)="close()">
@@ -11,26 +11,25 @@
   </ion-navbar>
 </ion-header>
 <ion-content class="gradient" padding>
-  <form novalidate [formGroup]="servicioForm" (ngSubmit)="nuevoServicio($event)">
+  <form  novalidate [formGroup]="loginForm" (ngSubmit)="actualizarServicio($event)">
     <ion-list no-lines>
       <ion-item>
         <ion-label floating>Hora Comienzo</ion-label>
-        <ion-datetime displayFormat="HH:mm" formControlName="horaComienzo"></ion-datetime>
+        <ion-datetime displayFormat="HH:mm" formControlName="horaComienzo" [(ngModel)]="servicio.hora_inicio"></ion-datetime>
       </ion-item>
       <ion-item>
         <ion-label floating>Tipo</ion-label>
-        <ion-select formControlName="tipo" #C (ionChange)="onChange(C.value)">
-          <ion-option value="transfer">Entrada</ion-option>
-          <ion-option value="transfer">Salida</ion-option>
+        <ion-select formControlName="tipo" #C (ionChange)="onChange(C.value)" [(ngModel)]="tipo">
+          <ion-option value="entrada">Entrada</ion-option>
+          <ion-option value="salida">Salida</ion-option>
           <ion-option value="traslado">Traslado</ion-option>
           <ion-option value="excursion">Excursión</ion-option>
-          <ion-option value="partido">T. Partido</ion-option>
           <ion-option value="otros">Otro</ion-option>
         </ion-select>
       </ion-item>
       <ion-item>
         <ion-label floating>Lugar Comienzo</ion-label>
-        <ion-input type="text" formControlName="lugarComienzo" [(ngModel)]="lugarComienzo"></ion-input>
+        <ion-input type="text" formControlName="lugarComienzo" [(ngModel)]="lugarComienzo" ></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Lugar Fin</ion-label>
@@ -38,23 +37,23 @@
       </ion-item>
       <ion-item>
         <ion-label floating>Plazas</ion-label>
-        <ion-input type="number" min="0" formControlName="paxs"></ion-input>
+        <ion-input type="number" min="0" formControlName="paxs" [(ngModel)]="servicio.paxs"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Cliente</ion-label>
-        <ion-input type="text" formControlName="cliente"></ion-input>
+        <ion-input type="text" formControlName="cliente" [(ngModel)]="servicio.cliente"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Núm. Orden</ion-label>
-        <ion-input type="text" formControlName="orden"></ion-input>
+        <ion-input type="text" formControlName="orden" [(ngModel)]="servicio.orden"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Matrícula</ion-label>
-        <ion-input type="text" formControlName="matricula"></ion-input>
+        <ion-input type="text" formControlName="matricula" [(ngModel)]="servicio.matricula"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Observaciones</ion-label>
-        <ion-input type="text" formControlName="observaciones"></ion-input>
+        <ion-input type="text" formControlName="observaciones" [(ngModel)]="servicio.observaciones"></ion-input>
       </ion-item>
     </ion-list>
     <button ion-button color="light" outline block type="submit">

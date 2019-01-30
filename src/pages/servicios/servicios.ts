@@ -1,8 +1,13 @@
 import {Component} from '@angular/core';
-import {ActionSheetController, IonicPage, ModalController, NavController, NavParams} from 'ionic-angular';
-import {AngularFireList, AngularFireDatabase} from 'angularfire2/database';
+import {
+  ActionSheetController,
+  AlertController,
+  IonicPage,
+  ModalController,
+  NavController,
+  NavParams
+} from 'ionic-angular';
 import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
 import {AngularFireAuth} from 'angularfire2/auth';
 import {MensajesProvider} from "../../providers/mensajes/mensajes";
 import {LoginPage} from "../login/login";
@@ -22,17 +27,16 @@ export class ServiciosPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private actionSheetCtrl: ActionSheetController,
-              public database: AngularFireDatabase,
               public afAuth: AngularFireAuth,
               private mensaje: MensajesProvider,
               private modalCtrl: ModalController,
-              private crud: CrudProvider
+              private crud: CrudProvider,
+              private alertCtrl: AlertController
   ) {
     this.dia = this.formattedDate(new Date());
     this.afAuth.authState.subscribe(res => {
       if (res && res.uid) {
         this.user_uid = res.uid;
-        console.log(this.user_uid)
         this.servicios = this.crud.obtenerServicios(this.dia);
       } else {
         this.mensaje.crearToast('user not logged in');
@@ -60,6 +64,7 @@ export class ServiciosPage {
         {
           icon: 'attach',
           text: 'Nuevo servicio',
+          cssClass: 'NuevoIcon',
           handler: () => {
             this.addServicios()
           }
@@ -67,13 +72,59 @@ export class ServiciosPage {
         {
           icon: 'clipboard',
           text: 'Cerrar dia',
+          cssClass: 'CerrarIcon',
           handler: () => {
-            console.log('Cerrar dia');
+            this.addDia();
           }
         },
         {
           icon: 'close-circle',
           text: 'Cancelar',
+          handler: () => {
+            console.log('cancelar clicked');
+          }
+        },
+      ]
+    });
+    action.present();
+  }
+
+  /**
+   * Opciones de servicio
+   */
+  opcionesServicio(servicio) {
+    const action = this.actionSheetCtrl.create({
+      title: 'Opciones',
+      cssClass: 'action-sheets-basic-page',
+      buttons: [
+        {
+          icon: 'repeat',
+          text: 'Cambiar estado',
+          cssClass: 'CambiarEstadoIcon',
+          handler: () => {
+            this.cambiarEstado(servicio);
+          }
+        },
+        {
+          icon: 'trash',
+          text: 'Borrar servicio',
+          cssClass: 'DeleteIcon',
+          handler: () => {
+            this.remServicio(servicio);
+          }
+        },
+        {
+          icon: 'create',
+          cssClass: 'EditIcon',
+          text: 'Modificar Servicio',
+          handler: () => {
+            this.editServicio(servicio);
+          }
+        },
+        {
+          icon: 'close-circle',
+          text: 'Cancelar',
+          role: 'cancel',
           handler: () => {
             console.log('cancelar clicked');
           }
@@ -95,6 +146,48 @@ export class ServiciosPage {
     crearServicios.present();
   }
 
+  addDia() {
+    const crearDia = this.modalCtrl.create('CerrarDiaModalPage',
+      {
+        user_id: this.user_uid,
+        fecha: this.dia
+      })
+    crearDia.present();
+  }
+
+  /**
+   * Abre modal Editar servicio
+   */
+  editServicio(servicio) {
+    const editarServicios = this.modalCtrl.create('EditServicioModalPage', {servicio, user_id: this.user_uid});
+    editarServicios.present();
+  }
+
+  /**
+   * Borrar servicio
+   */
+  remServicio(servicio) {
+    const confirm = this.alertCtrl.create({
+      title: 'Borrar servicio',
+      message: '¿Quieres borrar este servicio?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
+            console.log('Cancelado');
+          }
+        },
+        {
+          text: 'Borrar',
+          handler: () => {
+            this.crud.borrarServicio(servicio.id);
+          }
+        }
+      ]
+    })
+    confirm.present();
+  }
+
   /**
    * Construye fecha
    * @param d
@@ -108,6 +201,121 @@ export class ServiciosPage {
     if (day.length < 2) day = '0' + day;
 
     return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Cambia el estado del servicio
+   */
+
+  cambiarEstado(servicio) {
+
+    let alert = this.alertCtrl.create();
+    alert.setTitle('Cambiar estado');
+    switch (servicio.estado) {
+      case 'pendiente':
+        alert.addInput({
+          type: 'radio',
+          label: 'Terminado',
+          value: 'terminado',
+        });
+        alert.addInput({
+          type: 'radio',
+          label: 'Cancelado',
+          value: 'cancelado',
+        });
+        break;
+      case 'terminado':
+        alert.addInput({
+          type: 'radio',
+          label: 'Cancelado',
+          value: 'cancelado',
+        });
+        alert.addInput({
+          type: 'radio',
+          label: 'Pendiente',
+          value: 'pendiente',
+        });
+        break;
+      case 'cancelado':
+        alert.addInput({
+          type: 'radio',
+          label: 'Pendiente',
+          value: 'pendiente',
+        });
+        alert.addInput({
+          type: 'radio',
+          label: 'Terminado',
+          value: 'terminado',
+          checked: true
+        });
+
+    }
+
+    alert.addButton('Cancelar');
+
+    alert.addButton({
+      text: 'OK',
+      handler: data => {
+        if (data == 'terminado') {
+
+          this.horaFin(servicio.id, data, servicio.hora_inicio)
+
+        } else {
+
+          this.crud.actualizaEstado(servicio.id, data);
+
+        }
+      }
+    });
+    alert.present();
+  }
+
+  /**
+   * Pedir hora fin
+   */
+
+  horaFin(id, datos, horaInicio) {
+    const promptHora = this.alertCtrl.create({
+      title: 'Hora Fin',
+      message: 'Introduce la hora de finalización del servicio',
+      inputs: [
+        {
+          name: 'hora_fin',
+          type: 'time'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          handler: data => {
+            if (horaInicio > data.hora_fin) {
+              const confirm = this.alertCtrl.create({
+                title: 'Hora Inicio posterior a la hora fin',
+                message: 'Has introducido una hora de finalización anterior a la de comienzo. ¿Es correcto?',
+                buttons: [
+                  {
+                    text: 'No. Cancelar.',
+                    role: 'cancel'
+                  },
+                  {
+                    text: 'Sí, es correcto',
+                    handler: value => {
+                      this.crud.actualizaEstado(id, datos, data.hora_fin)
+                    }
+                  }
+                ]
+              })
+              confirm.present();
+            }
+          }
+        }
+      ]
+    })
+    promptHora.present();
   }
 
 }

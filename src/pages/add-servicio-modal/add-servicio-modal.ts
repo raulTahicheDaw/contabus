@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ServicioModel} from "../../models/servicio.model";
-import {defaultThrottleConfig} from "rxjs/internal-compatibility";
 import {CrudProvider} from "../../providers/crud/crud";
 
 @IonicPage()
@@ -12,7 +11,7 @@ import {CrudProvider} from "../../providers/crud/crud";
 })
 export class AddServicioModalPage {
 
-  loginForm: FormGroup;
+  servicioForm: FormGroup;
   servicio: ServicioModel = {
     cliente: '',
     fecha: '',
@@ -37,7 +36,7 @@ export class AddServicioModalPage {
               private formBuilder: FormBuilder,
               private crud: CrudProvider
   ) {
-    this.loginForm = this.buildLoginForm();
+    this.servicioForm = this.buildLoginForm();
     this.servicio.fecha = this.navParams.get('fecha');
     this.servicio.user_id = this.navParams.get('user_id');
   }
@@ -45,7 +44,7 @@ export class AddServicioModalPage {
 
   nuevoServicio(event: Event) {
 
-    let data = this.loginForm.value;
+    let data = this.servicioForm.value;
 
     event.preventDefault();
     this.servicio.cliente = data.cliente;
@@ -56,15 +55,12 @@ export class AddServicioModalPage {
     this.servicio.matricula = data.matricula;
     this.servicio.observaciones = data.observaciones;
     this.servicio.estado = "pendiente";
-    switch (data.tipo) {
-      case 'entrada':
-      case 'salida':
-        this.servicio.tipo = 'transfer';
-        break;
-      default:
-        this.servicio.tipo = data.tipo;
+    this.servicio.tipo = data.tipo;
+    if (data.tipo === 'partido') {
+      this.servicio.descripcion = "Turno Partido"
+    }else{
+      this.servicio.descripcion = data.lugarComienzo + ' ' + data.tipo + ' ' + data.lugarFin;
     }
-    this.servicio.descripcion = data.lugarComienzo + ' ' + data.tipo + ' ' + data.lugarFin;
     this.crud.addServicio(this.servicio);
     this.close();
   }

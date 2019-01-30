@@ -12,8 +12,8 @@ export class MensajesProvider {
   crearToast(mensaje){
     let toast = this.toastCtrl.create({
       message: mensaje,
-      duration: 3000,
-      position: 'top'
+      duration: 2000,
+      position: 'middle',
     });
 
     toast.present();

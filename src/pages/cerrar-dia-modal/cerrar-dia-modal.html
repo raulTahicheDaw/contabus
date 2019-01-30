@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-navbar color="dark">
+    <ion-title>
+      <h3>Nuevo servicio</h3>
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button clear item-right icon-only (click)="close()">
+        <ion-icon name="close-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content class="gradient" padding>
+  <form novalidate [formGroup]="diaForm" (ngSubmit)="nuevodia($event)">
+    <ion-list no-lines>
+      <ion-item>
+        <ion-label floating>Hora Comienzo</ion-label>
+        <ion-datetime displayFormat="HH:mm" formControlName="horaComienzo"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Hora Fin</ion-label>
+        <ion-datetime displayFormat="HH:mm" formControlName="horaFin"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Observaciones</ion-label>
+        <ion-input type="text" formControlName="observaciones"></ion-input>
+      </ion-item>
+    </ion-list>
+    <button ion-button color="light" outline block type="submit">
+      Cerrar Dia
+    </button>
+  </form>
+</ion-content>
+
+

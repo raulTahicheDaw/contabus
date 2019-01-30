@@ -1,37 +1,38 @@
 import {Injectable} from '@angular/core';
-import {AngularFireDatabase, AngularFireList} from 'angularfire2/database';
 import {AngularFireAuth} from 'angularfire2/auth';
+import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
 
 import {ServicioModel} from "../../models/servicio.model";
 import {MensajesProvider} from "../mensajes/mensajes";
-import {map} from "rxjs/operators";
+import {Observable} from "rxjs";
+import 'rxjs/Rx';
 
 
 @Injectable()
 export class CrudProvider {
-  serviciosRef: AngularFireList<any>;
+  serviciosCollection: AngularFirestoreCollection<ServicioModel>;
+  servicios: Observable<ServicioModel[]>;
   user_uid: any;
 
   constructor(
-    private database: AngularFireDatabase,
+    private database: AngularFirestore,
     public afAuth: AngularFireAuth,
-    private mensaje: MensajesProvider
+    private mensaje: MensajesProvider,
   ) {
-    this.serviciosRef = this.database.list('tasks');
     this.afAuth.authState.subscribe(res => {
       if (res && res.uid) {
-        console.log('user is logged in');
         this.user_uid = res.uid;
-        console.log(this.user_uid)
       } else {
         this.mensaje.crearToast('No está logueado');
       }
     });
+
   }
 
-  public addServicio(servicio: ServicioModel) {
-    this.serviciosRef = this.database.list('conductores/' + this.user_uid + '/servicios')
-    this.serviciosRef.push({
+
+  public updateServicio(servicio) {
+
+    var updates = {
       cliente: servicio.cliente,
       fecha: servicio.fecha,
       dia_id: servicio.dia_id,
@@ -44,15 +45,86 @@ export class CrudProvider {
       tipo: servicio.tipo,
       observaciones: servicio.observaciones,
       matricula: servicio.matricula,
-    })
-    this.mensaje.crearToast('Servicio Guardado')
+    }
+
+    return new Promise((resolve, reject) => {
+      this.database.collection('conductores/' + this.user_uid + '/servicios')
+        .doc(servicio.id)
+        .update(updates)
+        .then((obj: any) => {
+          this.mensaje.crearToast('Servicio Modificado')
+          resolve(obj);
+        })
+        .catch((error: any) => {
+          reject(error);
+        });
+    });
+  }
+
+  public addServicio(servicio: ServicioModel) {
+    return new Promise((resolve, reject) => {
+      this.serviciosCollection.add(servicio).then((obj: any) => {
+        this.mensaje.crearToast('Servicio Guardado')
+        resolve(servicio);
+      }).catch((error: any) => {
+        reject(error);
+      });
+    });
+  }
+
+  borrarServicio(key) {
+
+    return new Promise((resolve, reject) => {
+      this.database.collection('conductores/' + this.user_uid + '/servicios')
+        .doc(key)
+        .delete()
+        .then((obj: any) => {
+          this.mensaje.crearToast('Servicio Borrado')
+          resolve(obj);
+        })
+        .catch((error: any) => {
+          console.log(error)
+          this.mensaje.crearToast(error);
+          reject(error);
+        });
+    });
+
   }
 
   obtenerServicios(dia) {
-    this.serviciosRef = this.database.list('conductores/' + this.user_uid + '/servicios',
-      ref => ref.orderByChild('fecha').equalTo(dia));
-    return this.serviciosRef.snapshotChanges().pipe(map(changes => {
-      return changes.map(c => ({key: c.payload.key, ...c.payload.val()}));
-    }));
+    this.serviciosCollection = this.database.collection('conductores/' + this.user_uid + '/servicios',
+      ref => ref.where('fecha', '==', dia).orderBy('hora_inicio'));
+    this.servicios = this.serviciosCollection.snapshotChanges().map(actions => {
+      return actions.map(a => {
+        const data = a.payload.doc.data() as ServicioModel;
+        const id = a.payload.doc.id;
+        return {id, ...data};
+      });
+    });
+    return this.servicios;
   }
+
+
+  actualizaEstado(id, estado, hora_fin = '') {
+
+    var updates = {
+      estado: estado,
+      hora_fin: hora_fin
+    }
+
+    return new Promise((resolve, reject) => {
+      this.database.collection('conductores/' + this.user_uid + '/servicios')
+        .doc(id)
+        .update(updates)
+        .then((obj: any) => {
+          this.mensaje.crearToast('Servicio Modificado')
+          resolve(obj);
+        })
+        .catch((error: any) => {
+          reject(error);
+        });
+    });
+
+  }
+
 }

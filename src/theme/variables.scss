@@ -44,6 +44,9 @@ $colors: (
 
 $select-md-icon-color : white;
 $select-ios-icon-color: white;
+$toast-ios-background: #000; // Apply for iOS
+$toast-md-background: #000; // Apply for Android
+$toast-wp-background: black; // Apply for Windows
 // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here

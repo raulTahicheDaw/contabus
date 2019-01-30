@@ -8,11 +8,13 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthService } from '../providers/auth-service/auth-service';
 import { MensajesProvider } from '../providers/mensajes/mensajes';
 import { CrudProvider } from '../providers/crud/crud';
+import { DiasCrudProvider } from '../providers/dias-crud/dias-crud';
 
 const firebaseConfig = {
   apiKey: "AIzaSyADooNFyyvK0ugYKr_h0kdBL6rNnES1U48",
@@ -32,7 +34,9 @@ const firebaseConfig = {
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig,'contabus'),
-    AngularFireDatabaseModule  ],
+    AngularFirestoreModule.enablePersistence(),
+    AngularFireDatabaseModule
+  ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
@@ -46,7 +50,8 @@ const firebaseConfig = {
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthService,
     MensajesProvider,
-    CrudProvider
+    CrudProvider,
+    DiasCrudProvider
   ]
 })
 export class AppModule {}
