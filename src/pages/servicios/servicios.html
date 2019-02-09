@@ -19,42 +19,31 @@
 </ion-header>
 
 
-<ion-content padding>
-
-  <ion-list no-lines>
-    <ion-item class="servicio" *ngFor='let servicio of servicios | async' lines="full">
-      <ion-buttons end>
-        <button ion-button color="light" small  icon-only (click)="opcionesServicio(servicio)">
-          <ion-icon name="arrow-dropdown"></ion-icon>
-        </button>
-      </ion-buttons>
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <h1>{{servicio.hora_inicio}}</h1>
-          </ion-col>
-          <ion-col text-end>
-            Orden: <h3>{{servicio.orden}}</h3>
-          </ion-col>
-          <ion-col text-end>
-            Paxs: <h3>{{servicio.paxs}}</h3>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col><h2>{{servicio.descripcion}}</h2></ion-col>
-          <ion-col text-end>Matr: <h3>{{servicio.matricula}}</h3></ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>Cliente: <h2>{{servicio.cliente}}</h2></ion-col>
-          <ion-col text-end>Fin: <h1>{{servicio.hora_fin}}</h1></ion-col>
-        </ion-row>
-        <ion-row>
-          <span class="observaciones" text-wrap>{{servicio.observaciones}}</span>
-        </ion-row>
-      </ion-grid>
-      <ion-icon color="warning" *ngIf="servicio.estado === 'pendiente'" name="clock" float-right></ion-icon>
-      <ion-icon color="danger" *ngIf="servicio.estado === 'cancelado'" name="close-circle" float-right></ion-icon>
-      <ion-icon color="secondary" *ngIf="servicio.estado === 'terminado'" name="done-all" float-right></ion-icon>
+<ion-content class="gradient" padding>
+  <ion-card *ngFor='let servicio of servicios | async'
+            [ngClass]="{'bg-finalizado': servicio.estado === 'terminado', 'bg-cancelado': servicio.estado==='cancelado'}">
+    <ion-card-header>
+      <span class="hora">{{servicio.hora_inicio}}</span>
+      <ion-icon class="estado" color="warning" *ngIf="servicio.estado === 'pendiente'" name="clock"></ion-icon>
+      <ion-icon class="estado" color="danger" *ngIf="servicio.estado === 'cancelado'" name="close-circle"></ion-icon>
+      <ion-icon class="estado" color="secondary" *ngIf="servicio.estado === 'terminado'" name="done-all"></ion-icon>
+      <span class="num_orden"><strong>Ord:</strong> {{servicio.orden}}</span>
+      <ion-icon name="more" float-end (click)="opcionesServicio(servicio)"></ion-icon>
+    </ion-card-header>
+    <ion-item>
+      <h2 class="descripcion">{{servicio.descripcion}}</h2>
+      <h3>
+        <span class="matricula">
+          <strong>Matr.: </strong>{{servicio.matricula}}
+        </span>
+        <span class="paxs">
+          <strong>Paxs:</strong> {{servicio.paxs}}
+        </span>
+      </h3>
+      <h3><strong>Cliente: </strong>{{servicio.cliente}}</h3>
+      <h3><strong>Obsr: </strong></h3>
+      <p text-wrap>{{servicio.observaciones}}</p>
+      <h3 float-end><strong>Hora Fin: </strong>{{servicio.hora_fin}}</h3>
     </ion-item>
-  </ion-list>
+  </ion-card>
 </ion-content>

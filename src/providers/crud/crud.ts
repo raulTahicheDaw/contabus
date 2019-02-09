@@ -1,17 +1,18 @@
 import {Injectable} from '@angular/core';
-import {AngularFireAuth} from 'angularfire2/auth';
-import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
+import {AngularFireAuth} from '@angular/fire/auth';
+import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 
 import {ServicioModel} from "../../models/servicio.model";
 import {MensajesProvider} from "../mensajes/mensajes";
 import {Observable} from "rxjs";
 import 'rxjs/Rx';
+import {async} from "rxjs/internal/scheduler/async";
 
 
 @Injectable()
 export class CrudProvider {
   serviciosCollection: AngularFirestoreCollection<ServicioModel>;
-  servicios: Observable<ServicioModel[]>;
+  servicios: Observable<any>;
   user_uid: any;
 
   constructor(
@@ -100,10 +101,10 @@ export class CrudProvider {
         const id = a.payload.doc.id;
         return {id, ...data};
       });
+
     });
     return this.servicios;
   }
-
 
   actualizaEstado(id, estado, hora_fin = '') {
 

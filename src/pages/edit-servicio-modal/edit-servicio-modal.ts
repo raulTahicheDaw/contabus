@@ -45,8 +45,8 @@ export class EditServicioModalPage {
 
   analizaLugares() {
     var descripcion = this.servicio.descripcion;
-    this.lugarComienzo = descripcion.split(this.tipo)[0].trim();
-    this.lugarFin = descripcion.split(this.tipo)[1].trim();
+    this.lugarComienzo = descripcion.split(this.tipo)[0];
+    this.lugarFin = descripcion.split(this.tipo)[1];
   }
 
   /**
@@ -65,6 +65,7 @@ export class EditServicioModalPage {
         break;
       default:
         this.tipo = this.servicio.tipo;
+        console.log(this.servicio)
     }
 
   }

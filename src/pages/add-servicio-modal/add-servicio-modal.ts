@@ -55,7 +55,11 @@ export class AddServicioModalPage {
     this.servicio.matricula = data.matricula;
     this.servicio.observaciones = data.observaciones;
     this.servicio.estado = "pendiente";
-    this.servicio.tipo = data.tipo;
+    if (data.tipo === 'entrada' || data.tipo==='salida'){
+      this.servicio.tipo = 'transfer'
+    } else{
+      this.servicio.tipo = data.tipo;
+    }
     if (data.tipo === 'partido') {
       this.servicio.descripcion = "Turno Partido"
     }else{

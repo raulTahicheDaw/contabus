@@ -1,12 +1,10 @@
 import {Injectable} from '@angular/core';
-import {AngularFireDatabase, AngularFireList} from 'angularfire2/database';
-import {AngularFireAuth} from 'angularfire2/auth';
-
+import {AngularFireAuth} from '@angular/fire/auth';
 import {MensajesProvider} from "../mensajes/mensajes";
-import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
+import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {DiaModel} from "../../models/DiaModel";
 import {Observable} from "rxjs";
-import 'rxjs/Rx';
+import {ServicioModel} from "../../models/servicio.model";
 
 @Injectable()
 
@@ -15,6 +13,7 @@ export class DiasCrudProvider {
 
   user_uid: any;
   serviciosCollection: AngularFirestoreCollection<DiaModel>;
+  servicios: Observable<ServicioModel[]>;
 
   constructor(private database: AngularFirestore,
               public afAuth: AngularFireAuth,
@@ -39,5 +38,7 @@ export class DiasCrudProvider {
       });
     });
   }
+
+
 
 }

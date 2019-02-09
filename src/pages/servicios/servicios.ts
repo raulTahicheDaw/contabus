@@ -8,7 +8,7 @@ import {
   NavParams
 } from 'ionic-angular';
 import {Observable} from "rxjs";
-import {AngularFireAuth} from 'angularfire2/auth';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {MensajesProvider} from "../../providers/mensajes/mensajes";
 import {LoginPage} from "../login/login";
 import {CrudProvider} from "../../providers/crud/crud";
@@ -19,7 +19,6 @@ import {CrudProvider} from "../../providers/crud/crud";
   templateUrl: 'servicios.html',
 })
 export class ServiciosPage {
-
   servicios: Observable<any[]>;
   user_uid: any;
   dia: string;
@@ -303,13 +302,15 @@ export class ServiciosPage {
                   },
                   {
                     text: 'Sí, es correcto',
-                    handler: value => {
+                    handler: () => {
                       this.crud.actualizaEstado(id, datos, data.hora_fin)
                     }
                   }
                 ]
               })
               confirm.present();
+            }else {
+              this.crud.actualizaEstado(id, datos, data.hora_fin)
             }
           }
         }
