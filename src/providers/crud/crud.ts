@@ -6,7 +6,6 @@ import {ServicioModel} from "../../models/servicio.model";
 import {MensajesProvider} from "../mensajes/mensajes";
 import {Observable} from "rxjs";
 import 'rxjs/Rx';
-import {async} from "rxjs/internal/scheduler/async";
 
 
 @Injectable()

@@ -19,7 +19,7 @@
 </ion-header>
 
 
-<ion-content class="gradient" padding>
+<ion-content class="gradient" >
   <ion-card *ngFor='let servicio of servicios | async'
             [ngClass]="{'bg-finalizado': servicio.estado === 'terminado', 'bg-cancelado': servicio.estado==='cancelado'}">
     <ion-card-header>

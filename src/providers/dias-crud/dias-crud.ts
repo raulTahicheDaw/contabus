@@ -39,6 +39,8 @@ export class DiasCrudProvider {
     });
   }
 
+  public compruebaExisteDia(fecha){
+  }
 
 
 }

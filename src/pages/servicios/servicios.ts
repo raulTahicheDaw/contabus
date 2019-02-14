@@ -12,6 +12,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {MensajesProvider} from "../../providers/mensajes/mensajes";
 import {LoginPage} from "../login/login";
 import {CrudProvider} from "../../providers/crud/crud";
+import {DiasCrudProvider} from "../../providers/dias-crud/dias-crud";
 
 @IonicPage()
 @Component({
@@ -19,6 +20,7 @@ import {CrudProvider} from "../../providers/crud/crud";
   templateUrl: 'servicios.html',
 })
 export class ServiciosPage {
+  estadoDia: boolean = true;
   servicios: Observable<any[]>;
   user_uid: any;
   dia: string;
@@ -30,13 +32,15 @@ export class ServiciosPage {
               private mensaje: MensajesProvider,
               private modalCtrl: ModalController,
               private crud: CrudProvider,
-              private alertCtrl: AlertController
+              private alertCtrl: AlertController,
+              private diasProvider: DiasCrudProvider
   ) {
     this.dia = this.formattedDate(new Date());
     this.afAuth.authState.subscribe(res => {
       if (res && res.uid) {
         this.user_uid = res.uid;
         this.servicios = this.crud.obtenerServicios(this.dia);
+        console.log(this.diasProvider.compruebaExisteDia('2019-02-14'));
       } else {
         this.mensaje.crearToast('user not logged in');
         this.navCtrl.setRoot(LoginPage)

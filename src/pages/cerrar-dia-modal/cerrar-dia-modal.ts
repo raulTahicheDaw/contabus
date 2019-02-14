@@ -78,12 +78,13 @@ export class CerrarDiaModalPage {
         }
       })
       console.log(this.dia);
+
+      this.dia.horaComienzo = data.horaComienzo;
+      this.dia.horaComienzo = data.horaFin;
+      this.dia.observaciones = data.observaciones;
+      this.diaCrud.addDia(this.dia);
+      this.close();
     })
-    this.dia.horaComienzo = data.horaComienzo;
-    this.dia.horaComienzo = data.horaFin;
-    this.dia.observaciones = data.observaciones;
-    this.diaCrud.addDia(this.dia);
-    this.close();
   }
 
   close() {
