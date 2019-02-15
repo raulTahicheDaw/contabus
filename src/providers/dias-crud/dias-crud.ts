@@ -30,7 +30,7 @@ export class DiasCrudProvider {
 
   public addDia(dia: DiaModel) {
     return new Promise((resolve, reject) => {
-      this.serviciosCollection.add(dia).then((obj: any) => {
+      this.serviciosCollection.doc(dia.fecha).set(dia).then((obj: any) => {
         this.mensaje.crearToast('Dia Cerrado')
         resolve(dia);
       }).catch((error: any) => {
@@ -39,7 +39,11 @@ export class DiasCrudProvider {
     });
   }
 
-  public compruebaExisteDia(fecha){
+  public compruebaExisteDia(fecha) {
+    this.serviciosCollection.doc(fecha).get()
+      .subscribe(snap => {
+        return snap.exists;
+      })
   }
 
 

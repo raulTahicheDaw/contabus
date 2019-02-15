@@ -20,7 +20,7 @@ import {DiasCrudProvider} from "../../providers/dias-crud/dias-crud";
   templateUrl: 'servicios.html',
 })
 export class ServiciosPage {
-  estadoDia: boolean = true;
+  estadoDia;
   servicios: Observable<any[]>;
   user_uid: any;
   dia: string;
@@ -40,12 +40,16 @@ export class ServiciosPage {
       if (res && res.uid) {
         this.user_uid = res.uid;
         this.servicios = this.crud.obtenerServicios(this.dia);
-        console.log(this.diasProvider.compruebaExisteDia('2019-02-14'));
+        this.estadoDia = this.diasProvider.compruebaExisteDia(this.dia);
+        console.log(this.estadoDia)
       } else {
         this.mensaje.crearToast('user not logged in');
         this.navCtrl.setRoot(LoginPage)
       }
     });
+  }
+
+  ionViewDidLoad(){
   }
 
   /**
@@ -54,6 +58,8 @@ export class ServiciosPage {
    */
   onChange(dia) {
     this.dia = this.formattedDate(new Date(dia.year + '-' + dia.month + '-' + dia.day));
+    this.estadoDia = this.diasProvider.compruebaExisteDia(this.dia);
+    console.log(this.estadoDia)
     this.servicios = this.crud.obtenerServicios(this.dia);
   }
 
@@ -81,6 +87,14 @@ export class ServiciosPage {
           }
         },
         {
+          icon: 'clipboard',
+          text: 'Abrir dia',
+          cssClass: 'CerrarIcon',
+          handler: () => {
+            console.log('Abrir dia');
+          }
+        },
+        {
           icon: 'close-circle',
           text: 'Cancelar',
           handler: () => {
@@ -90,6 +104,18 @@ export class ServiciosPage {
       ]
     });
     action.present();
+  }
+
+  cssClassForButton(item, buttonText): string {
+    let cssClass = '';
+    const status = item.status.toLowerCase();
+    if(status === 'pending'  &&  ( buttonText === 'Edit' || buttonText === 'Pending'))
+      cssClass = 'disable-action-sheet-btns';
+    else if(status === 'draft'  && ( buttonText === 'Edit' || buttonText === 'Draft'))
+      cssClass = 'disable-action-sheet-btns';
+    else if(status === 'publish'  &&  ( buttonText === 'Publish'))
+      cssClass = 'disable-action-sheet-btns';
+    return cssClass;
   }
 
   /**

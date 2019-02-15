@@ -16,6 +16,11 @@
     <ion-datetime #Dia displayFormat="DD-MM-YYYY" pickerFormat="DD-MM-YYYY" [(ngModel)]="dia"
                   (ionChange)="onChange(Dia.value)"></ion-datetime>
   </ion-item>
+  <ion-item *ngIf="estadoDia">
+    <ion-card>
+      <ion-card-header color="danger">Dia cerrado</ion-card-header>
+    </ion-card>
+  </ion-item>
 </ion-header>
 
 
