@@ -1,16 +1,16 @@
 <ion-content class="gradient" padding>
-  <form novalidate [formGroup]="loginForm" (ngSubmit)="doLogin($event)">
+  <form novalidate [formGroup]="loginForm" (ngSubmit)="doLogin($event)" style="text-align: center!important;">
     <img src="./assets/imgs/contabuslogo.png" class="logo">
     <ion-list no-lines>
       <ion-item>
         <ion-input placeholder="Correo" type="email" formControlName="email"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input placeholder="Contraseña" type="password" formControlName="password"></ion-input>
+        <ion-input placeholder="Contraseña" type="password" formControlName="password" ></ion-input>
       </ion-item>
     </ion-list>
-    <button ion-button color="light" outline block type="submit">
-      Ingresar
+    <button class="enviar" ion-button color="light" outline  type="submit">
+      <ion-icon name="log-in" class="larger"></ion-icon>
     </button>
   </form>
 </ion-content>

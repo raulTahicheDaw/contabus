@@ -29,9 +29,6 @@
             [ngClass]="{'bg-finalizado': servicio.estado === 'terminado', 'bg-cancelado': servicio.estado==='cancelado'}">
     <ion-card-header>
       <span class="hora">{{servicio.hora_inicio}}</span>
-      <ion-icon class="estado" color="warning" *ngIf="servicio.estado === 'pendiente'" name="clock"></ion-icon>
-      <ion-icon class="estado" color="danger" *ngIf="servicio.estado === 'cancelado'" name="close-circle"></ion-icon>
-      <ion-icon class="estado" color="secondary" *ngIf="servicio.estado === 'terminado'" name="done-all"></ion-icon>
       <span class="num_orden"><strong>Ord:</strong> {{servicio.orden}}</span>
       <ion-icon name="more" float-end (click)="opcionesServicio(servicio)"></ion-icon>
     </ion-card-header>

@@ -1,32 +1,52 @@
 page-login {
 
-  ion-content{
-    img.logo{
+  ion-content {
+
+    img.logo {
       width: 80%;
       margin: 30% auto 20px auto;
       display: block;
     }
-    .item{
-      background-color: rgba(255,255,255,.3);
+
+    .item {
+      background-color: rgba(255, 255, 255, .3);
       border-radius: 5px;
       margin-bottom: 10px;
-      &:last-child{
+
+      &:last-child {
         margin-bottom: 0px;
       }
-      .text-input{
+
+      .text-input {
         color: white;
       }
     }
-    input.text-input{
+
+    input.text-input {
       @include placeholder(white);
     }
   }
-  ion-footer{
-    .toolbar-background{
-      background-color: rgba(255,255,255,.3);
+
+  .enviar {
+    border-radius: 50% !important;
+    width: 100px;
+    height: 100px;
+    margin-top: 30px;
+    color: #302b2b!important;
+    font-size: 1.5em !important;
+    font-weight: bold;
+  }
+  .larger {
+    font-size: 100px !important;
+    color: #ffde03!important ;
+  }
+
+  ion-footer {
+    .toolbar-background {
+      background-color: rgba(255, 255, 255, .3);
     }
-    .toolbar-title{
-      color: white;
+
+    .toolbar-title {
       font-weight: lighter;
     }
   }
